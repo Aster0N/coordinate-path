@@ -3,7 +3,7 @@ import PathField from "@/components/PathField/PathField.tsx";
 const Home = () => {
   return (
     <>
-      <h1>Home page</h1>
+      <h1>Click on the field</h1>
       <hr />
       <PathField />
     </>
