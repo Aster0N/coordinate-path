@@ -1,5 +1,7 @@
 export type Point = {
-	id: number;
-	x: number;
-	y: number;
+  id: string;
+  x: number;
+  y: number;
 };
+
+export type Points = Record<Point["id"], Point>;

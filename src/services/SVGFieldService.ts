@@ -1,9 +1,9 @@
-import type { Point } from "@/components/PathField/fieldTypes";
+import type { Point, Points } from "@/components/PathField/fieldTypes";
 import * as d3 from "d3";
 
 type DrawPoint = (
   svgRef: React.RefObject<SVGSVGElement | null>,
-  points: Point[],
+  points: Points,
   isEditable: Boolean
 ) => void;
 
@@ -18,7 +18,7 @@ export default class SVGFieldService {
 
     const circles = svg
       .selectAll("circle")
-      .data(points, (d: any) => d.id)
+      .data(Object.values(points), (d: any) => d.id)
       .enter()
       .append("circle")
       .attr("cx", (d) => d.x)
