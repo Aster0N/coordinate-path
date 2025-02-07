@@ -4,7 +4,6 @@ const Home = () => {
   return (
     <>
       <h1>Click on the field</h1>
-      <hr />
       <PathField />
     </>
   );

@@ -1,10 +1,14 @@
 import type { Point } from "@/components/PathField/fieldTypes";
 import * as d3 from "d3";
 
-type DrawPoint = (svgRef: React.RefObject<SVGSVGElement | null>, points: Point[]) => void
+type DrawPoint = (
+  svgRef: React.RefObject<SVGSVGElement | null>,
+  points: Point[],
+  isEditable: Boolean
+) => void;
 
 export default class SVGFieldService {
-  static drawPoint: DrawPoint = function(svgRef, points) {
+  static drawPoint: DrawPoint = function (svgRef, points, isEditable) {
     if (!svgRef.current) return;
 
     const svg = d3.select(svgRef.current);
@@ -12,7 +16,7 @@ export default class SVGFieldService {
     // clear before rerender (avoiding duplicates)
     svg.selectAll("*").remove();
 
-    svg
+    const circles = svg
       .selectAll("circle")
       .data(points, (d: any) => d.id)
       .enter()
@@ -21,8 +25,10 @@ export default class SVGFieldService {
       .attr("cy", (d) => d.y)
       .attr("r", 10)
       .attr("fill", "white")
-      .attr("cursor", "pointer")
-      .call(
+      .attr("cursor", isEditable ? "pointer" : "default");
+
+    if (isEditable) {
+      circles.call(
         d3
           .drag<SVGCircleElement, Point>()
           .on("start", function () {
@@ -37,5 +43,6 @@ export default class SVGFieldService {
             d3.select(this).attr("stroke", null);
           })
       );
-  }
+    }
+  };
 }
