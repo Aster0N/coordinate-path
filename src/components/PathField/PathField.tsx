@@ -11,6 +11,7 @@ const PathField = () => {
 
   useEffect(() => {
     SVGFieldService.drawPoint(svgRef, points, isEditable);
+    SVGFieldService.drawCurve(svgRef, points);
   }, [points, isEditable]);
 
   const handleClick = (event: React.MouseEvent<SVGSVGElement>) => {
