@@ -8,6 +8,7 @@
   transition: all 0.3s ease-out;
   outline: none;
   background-color: #242424;
+	user-select: none;
 }
 
 .button:hover {

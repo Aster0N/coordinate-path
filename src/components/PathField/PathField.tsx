@@ -1,8 +1,8 @@
 import SVGFieldService from "@/services/SVGFieldService";
 import { useEffect, useRef, useState } from "react";
 import Button from "../Button/Button";
-import type { Points } from "./fieldTypes";
 import cl from "./PathField.module.css";
+import type { Points } from "./types";
 
 const PathField = () => {
   const svgRef = useRef<SVGSVGElement | null>(null);

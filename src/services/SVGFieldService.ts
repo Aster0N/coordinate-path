@@ -1,4 +1,4 @@
-import type { Point, Points } from "@/components/PathField/fieldTypes";
+import type { Point, Points } from "@/components/PathField/types";
 import * as d3 from "d3";
 
 type DrawPoint = (
