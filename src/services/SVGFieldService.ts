@@ -1,24 +1,11 @@
-import type { Point, Points } from "@/components/PathField/types";
+import type { Point } from "@/components/PathField/types";
+import type { ClearField, DrawCurve, DrawPoint } from "@/services/types";
 import * as d3 from "d3";
-
-type DrawPoint = (
-  svgRef: React.RefObject<SVGSVGElement | null>,
-  points: Points,
-  isEditable: Boolean
-) => void;
-
-type DrawCurve = (
-  svgRef: React.RefObject<SVGSVGElement | null>,
-  points: Points
-) => void;
 
 export default class SVGFieldService {
   static drawPoint: DrawPoint = function (svgRef, points, isEditable) {
     if (!svgRef.current) return;
-
     const svg = d3.select(svgRef.current);
-
-    // clear before rerender (avoiding duplicates)
     svg.selectAll("*").remove();
 
     const circles = svg
@@ -74,7 +61,7 @@ export default class SVGFieldService {
       .line<Point>()
       .x((d) => d.x)
       .y((d) => d.y)
-      .curve(d3.curveCatmullRom); // make line smooth
+      .curve(d3.curveCatmullRom);
 
     const pathData = lineGenerator(pointsArray) || "";
 
@@ -85,5 +72,11 @@ export default class SVGFieldService {
       .attr("pointer-events", "none")
       .attr("stroke", "blue")
       .attr("stroke-width", 2);
+  };
+
+  static clearField: ClearField = function (svgRef) {
+    if (!svgRef.current) return;
+    const svg = d3.select(svgRef.current);
+    svg.selectAll("*").remove();
   };
 }

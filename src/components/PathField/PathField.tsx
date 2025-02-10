@@ -38,12 +38,21 @@ const PathField = () => {
     setIsEditable(!isEditable);
   };
 
+  const clearField = () => {
+    SVGFieldService.clearField(svgRef);
+    setPoints({});
+    setIsEditable(false);
+  };
+
   return (
     <div>
       <svg className={cl.field} ref={svgRef} onClick={handleClick} />
-      <Button clickHandler={changeEditAbility}>
-        {isEditable ? "save" : "edit position"}
-      </Button>
+      <div className={cl.actions}>
+        <Button clickHandler={changeEditAbility}>
+          {isEditable ? "save" : "edit position"}
+        </Button>
+        <Button clickHandler={clearField}>clear</Button>
+      </div>
     </div>
   );
 };
