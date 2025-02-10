@@ -37,11 +37,23 @@ export default class SVGFieldService {
         d3
           .drag<SVGCircleElement, Point>()
           .on("start", function () {
-            d3.select(this).raise().attr("stroke", "#747bff");
+            d3.select(this)
+              .raise()
+              .attr("stroke", "#747bff")
+              .attr("stroke-width", 4);
           })
           .on("drag", function (event, d) {
-            d.x = event.x;
-            d.y = event.y;
+            const svgRect = svgRef.current?.getBoundingClientRect();
+            if (!svgRect) {
+              return;
+            }
+            const minX = 0;
+            const minY = 0;
+            const maxX = svgRect.width;
+            const maxY = svgRect.height;
+            d.x = Math.max(minX, Math.min(event.x, maxX));
+            d.y = Math.max(minY, Math.min(event.y, maxY));
+
             d3.select(this).attr("cx", d.x).attr("cy", d.y);
             svg.selectAll("path").remove();
             SVGFieldService.drawCurve(svgRef, points);
@@ -70,6 +82,7 @@ export default class SVGFieldService {
       .append("path")
       .attr("d", pathData)
       .attr("fill", "none")
+      .attr("pointer-events", "none")
       .attr("stroke", "blue")
       .attr("stroke-width", 2);
   };
