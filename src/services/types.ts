@@ -14,3 +14,8 @@ export type DrawCurve = (
 export type ClearField = (
   svgRef: React.RefObject<SVGSVGElement | null>
 ) => void;
+
+export type DragPoint = (
+	svgRef: React.RefObject<SVGSVGElement | null>,
+	points: Points
+) => void;

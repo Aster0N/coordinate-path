@@ -1,5 +1,10 @@
 import type { Point } from "@/components/PathField/types";
-import type { ClearField, DrawCurve, DrawPoint } from "@/services/types";
+import type {
+  ClearField,
+  DragPoint,
+  DrawCurve,
+  DrawPoint,
+} from "@/services/types";
 import * as d3 from "d3";
 
 export default class SVGFieldService {
@@ -8,7 +13,7 @@ export default class SVGFieldService {
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
-    const circles = svg
+    svg
       .selectAll("circle")
       .data(Object.values(points), (d: any) => d.id)
       .enter()
@@ -18,38 +23,42 @@ export default class SVGFieldService {
       .attr("r", 20)
       .attr("fill", "white")
       .attr("cursor", isEditable ? "pointer" : "default");
+  };
 
-    if (isEditable) {
-      circles.call(
-        d3
-          .drag<SVGCircleElement, Point>()
-          .on("start", function () {
-            d3.select(this)
-              .raise()
-              .attr("stroke", "#747bff")
-              .attr("stroke-width", 4);
-          })
-          .on("drag", function (event, d) {
-            const svgRect = svgRef.current?.getBoundingClientRect();
-            if (!svgRect) {
-              return;
-            }
-            const minX = 0;
-            const minY = 0;
-            const maxX = svgRect.width;
-            const maxY = svgRect.height;
-            d.x = Math.max(minX, Math.min(event.x, maxX));
-            d.y = Math.max(minY, Math.min(event.y, maxY));
+  static dragPoint: DragPoint = function (svgRef, points) {
+    if (!svgRef.current) return;
+    const svg = d3.select(svgRef.current);
+    const circles = svg.selectAll<SVGCircleElement, Point>("circle");
 
-            d3.select(this).attr("cx", d.x).attr("cy", d.y);
-            svg.selectAll("path").remove();
-            SVGFieldService.drawCurve(svgRef, points);
-          })
-          .on("end", function () {
-            d3.select(this).attr("stroke", null);
-          })
-      );
-    }
+    circles.call(
+      d3
+        .drag<SVGCircleElement, Point>()
+        .on("start", function () {
+          d3.select(this)
+            .raise()
+            .attr("stroke", "#747bff")
+            .attr("stroke-width", 4);
+        })
+        .on("drag", function (event, d) {
+          const svgRect = svgRef.current?.getBoundingClientRect();
+          if (!svgRect) {
+            return;
+          }
+          const minX = 0;
+          const minY = 0;
+          const maxX = svgRect.width;
+          const maxY = svgRect.height;
+          d.x = Math.max(minX, Math.min(event.x, maxX));
+          d.y = Math.max(minY, Math.min(event.y, maxY));
+
+          d3.select(this).attr("cx", d.x).attr("cy", d.y);
+          svg.selectAll("path").remove();
+          SVGFieldService.drawCurve(svgRef, points);
+        })
+        .on("end", function () {
+          d3.select(this).attr("stroke", null);
+        })
+    );
   };
 
   static drawCurve: DrawCurve = function (svgRef, points) {
