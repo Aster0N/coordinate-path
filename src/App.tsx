@@ -1,11 +1,12 @@
-import "./App.css";
+import "@/styles/App.css";
+import { PointsContextProvider } from "./components/PointsContext";
 import Home from "./pages/Home/Home";
 
 function App() {
   return (
-    <>
-      <Home/>
-    </>
+    <PointsContextProvider>
+      <Home />
+    </PointsContextProvider>
   );
 }
 
