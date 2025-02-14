@@ -1,21 +1,39 @@
+import Button from "@/components/Button/Button";
+import { PointsContext } from "@/components/PointsContext";
 import SVGFieldService from "@/services/SVGFieldService";
-import { useEffect, useRef, useState } from "react";
-import Button from "../Button/Button";
+import type { Point } from "@/types/points";
+import { useContext, useEffect, useRef, useState } from "react";
 import cl from "./PathField.module.css";
-import type { Points } from "./types";
 
 const PathField = () => {
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const [points, setPoints] = useState<Points>({});
   const [isEditable, setIsEditable] = useState<Boolean>(false);
+  const pointsContext = useContext(PointsContext);
+  if (!pointsContext) {
+    throw new Error(
+      "PointsContext must be used within a PointsContextProvider"
+    );
+  }
+  const { points, setPoints } = pointsContext?.pointsValue;
+
+  const updateCoords = ({ id, x, y }: Point) => {
+    setPoints(() => {
+      const newId = `${x}-${y}`;
+      const { [id]: _, ...rest } = points;
+      return {
+        ...rest,
+        [newId]: { id: newId, x: x, y: y },
+      };
+    });
+  };
 
   useEffect(() => {
     SVGFieldService.drawPoint(svgRef, points, isEditable);
     SVGFieldService.drawCurve(svgRef, points);
 
-		if(isEditable) {
-			SVGFieldService.dragPoint(svgRef, points)
-		}
+    if (isEditable) {
+      SVGFieldService.dragPoint(svgRef, points, updateCoords);
+    }
     console.log(points);
   }, [points, isEditable]);
 

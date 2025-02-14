@@ -1,10 +1,10 @@
-import type { Point } from "@/components/PathField/types";
 import type {
   ClearField,
   DragPoint,
   DrawCurve,
   DrawPoint,
 } from "@/services/types";
+import type { Point } from "@/types/points";
 import * as d3 from "d3";
 
 export default class SVGFieldService {
@@ -25,7 +25,7 @@ export default class SVGFieldService {
       .attr("cursor", isEditable ? "pointer" : "default");
   };
 
-  static dragPoint: DragPoint = function (svgRef, points) {
+  static dragPoint: DragPoint = function (svgRef, points, updateCoords) {
     if (!svgRef.current) return;
     const svg = d3.select(svgRef.current);
     const circles = svg.selectAll<SVGCircleElement, Point>("circle");
@@ -55,8 +55,11 @@ export default class SVGFieldService {
           svg.selectAll("path").remove();
           SVGFieldService.drawCurve(svgRef, points);
         })
-        .on("end", function () {
+        .on("end", function (_, d) {
           d3.select(this).attr("stroke", null);
+          if (updateCoords) {
+            updateCoords(d);
+          }
         })
     );
   };

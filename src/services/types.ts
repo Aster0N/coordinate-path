@@ -1,4 +1,4 @@
-import type { Points } from "@/components/PathField/types";
+import type { Point, Points } from "@/types/points";
 
 export type DrawPoint = (
   svgRef: React.RefObject<SVGSVGElement | null>,
@@ -16,6 +16,7 @@ export type ClearField = (
 ) => void;
 
 export type DragPoint = (
-	svgRef: React.RefObject<SVGSVGElement | null>,
-	points: Points
+  svgRef: React.RefObject<SVGSVGElement | null>,
+  points: Points,
+  updateCoords: (point: Point) => void
 ) => void;
