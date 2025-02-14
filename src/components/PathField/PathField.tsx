@@ -17,13 +17,18 @@ const PathField = () => {
   const { points, setPoints } = pointsContext?.pointsValue;
 
   const updateCoords = ({ id, x, y }: Point) => {
-    setPoints(() => {
+    setPoints((prev) => {
       const newId = `${x}-${y}`;
-      const { [id]: _, ...rest } = points;
-      return {
-        ...rest,
-        [newId]: { id: newId, x: x, y: y },
-      };
+      const pointsArray = Object.entries(prev);
+      const index = pointsArray.findIndex(([key]) => key === id);
+      if (index === -1) {
+        return prev;
+      }
+      pointsArray[index] = [
+        newId,
+        { ...pointsArray[index][1], id: newId, x, y },
+      ];
+      return Object.fromEntries(pointsArray);
     });
   };
 
