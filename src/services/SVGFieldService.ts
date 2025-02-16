@@ -1,5 +1,6 @@
 import type {
   ClearField,
+  DeletePoint,
   DragPoint,
   DrawCurve,
   DrawPoint,
@@ -18,8 +19,8 @@ export default class SVGFieldService {
       .data(Object.values(points), (d: any) => d.id)
       .enter()
       .append("circle")
-      .attr("cx", (d) => d.x)
-      .attr("cy", (d) => d.y)
+      .attr("cx", d => d.x)
+      .attr("cy", d => d.y)
       .attr("r", 20)
       .attr("fill", "white")
       .attr("cursor", isEditable ? "pointer" : "default");
@@ -71,8 +72,8 @@ export default class SVGFieldService {
 
     const lineGenerator = d3
       .line<Point>()
-      .x((d) => d.x)
-      .y((d) => d.y)
+      .x(d => d.x)
+      .y(d => d.y)
       .curve(d3.curveCatmullRom);
 
     const pathData = lineGenerator(pointsArray) || "";
@@ -82,7 +83,7 @@ export default class SVGFieldService {
       .attr("d", pathData)
       .attr("fill", "none")
       .attr("pointer-events", "none")
-      .attr("stroke", "blue")
+      .attr("stroke", "white")
       .attr("stroke-width", 2);
   };
 
@@ -90,5 +91,16 @@ export default class SVGFieldService {
     if (!svgRef.current) return;
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
+  };
+
+  static deletePoint: DeletePoint = function (svgRef, id) {
+    if (!svgRef.current) return;
+    const svg = d3.select(svgRef.current);
+    console.log(id);
+
+    svg
+      .selectAll("circle")
+      .filter((d: any) => d.id === id)
+      .remove();
   };
 }

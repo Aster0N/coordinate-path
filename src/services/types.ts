@@ -1,5 +1,10 @@
 import type { Point, Points } from "@/types/points";
 
+export type Coords = {
+  x: number;
+  y: number;
+};
+
 export type DrawPoint = (
   svgRef: React.RefObject<SVGSVGElement | null>,
   points: Points,
@@ -19,4 +24,9 @@ export type DragPoint = (
   svgRef: React.RefObject<SVGSVGElement | null>,
   points: Points,
   updateCoords: (point: Point) => void
+) => void;
+
+export type DeletePoint = (
+  svgRef: React.RefObject<SVGSVGElement | null>,
+  id: Point["id"]
 ) => void;

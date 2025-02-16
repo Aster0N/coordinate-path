@@ -9,3 +9,12 @@
   display: flex;
   gap: 15px;
 }
+
+.clearBtn {
+  border: 2px solid crimson;
+  background-color: rgba(220, 20, 60, 0.461);
+}
+
+.clearBtn:hover {
+  border: 2px solid rgb(216, 87, 113);
+}

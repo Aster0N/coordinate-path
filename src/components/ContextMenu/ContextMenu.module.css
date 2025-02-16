@@ -1,0 +1,21 @@
+.contextMenu {
+  position: absolute;
+  padding: 5px 5px;
+  border-radius: 10px;
+  background-color: #1c1c1c;
+}
+
+.closeMenuBtn {
+  transition: all 0.3s ease-out;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  margin: 0 0 0 5px;
+  text-align: center;
+  border: 2px solid crimson;
+  background-color: rgb(140, 13, 39);
+}
+
+.closeMenuBtn:hover {
+  border: 2px solid rgb(216, 87, 113);
+}

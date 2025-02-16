@@ -1,13 +1,22 @@
 import cl from "./Button.module.css";
 
-type ButtonProps = {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  clickHandler: () => void;
-};
+  clickHandler?: () => void;
+  className?: string;
+}
 
-const Button: React.FC<ButtonProps> = ({ children, clickHandler }) => {
+const Button: React.FC<ButtonProps> = ({
+  children,
+  clickHandler,
+  ...props
+}) => {
   return (
-    <button className={cl.button} onClick={clickHandler}>
+    <button
+      className={[cl.button, props?.className].join()}
+      onClick={clickHandler}
+      {...props}
+    >
       {children}
     </button>
   );

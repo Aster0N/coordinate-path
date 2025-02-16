@@ -1,12 +1,20 @@
 import Button from "@/components/Button/Button";
 import { PointsContext } from "@/components/PointsContext";
 import SVGFieldService from "@/services/SVGFieldService";
+import { Coords } from "@/services/types";
 import type { Point } from "@/types/points";
 import { useContext, useEffect, useRef, useState } from "react";
-import cl from "./PathField.module.css";
+import ContextMenu from "../ContextMenu/ContextMenu";
+import styles from "./PathField.module.css";
 
 const PathField = () => {
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const [isContextMenuOpen, setIsContextMenuOpen] = useState<boolean>(false);
+  const [contextMenuCoords, setContextMenuCoords] = useState<Coords>({
+    x: 0,
+    y: 0,
+  });
+  const [pointIdToDelete, setPointIdToDelete] = useState<Point["id"]>("");
   const [isEditable, setIsEditable] = useState<Boolean>(false);
   const pointsContext = useContext(PointsContext);
   if (!pointsContext) {
@@ -17,7 +25,7 @@ const PathField = () => {
   const { points, setPoints } = pointsContext?.pointsValue;
 
   const updateCoords = ({ id, x, y }: Point) => {
-    setPoints((prev) => {
+    setPoints(prev => {
       const newId = `${x}-${y}`;
       const pointsArray = Object.entries(prev);
       const index = pointsArray.findIndex(([key]) => key === id);
@@ -42,9 +50,10 @@ const PathField = () => {
     console.log(points);
   }, [points, isEditable]);
 
-  const handleClick = (event: React.MouseEvent<SVGSVGElement>) => {
+  const addPoint = (event: React.MouseEvent<SVGSVGElement>) => {
     const rect = svgRef.current?.getBoundingClientRect();
-    if (!rect) {
+    if (!rect || isContextMenuOpen) {
+      setIsContextMenuOpen(false);
       return;
     }
 
@@ -56,7 +65,7 @@ const PathField = () => {
       return;
     }
 
-    setPoints((prev) => ({
+    setPoints(prev => ({
       ...prev,
       [pointId]: { id: pointId, x, y },
     }));
@@ -72,14 +81,66 @@ const PathField = () => {
     setIsEditable(false);
   };
 
+  const openContextMenu = (event: React.MouseEvent) => {
+    if (!(event.target instanceof SVGCircleElement)) {
+      setIsContextMenuOpen(false);
+      return;
+    }
+    setIsEditable(false);
+    event.preventDefault();
+    setContextMenuCoords({
+      x: event.clientX,
+      y: event.clientY,
+    });
+    const circleElement = event.target as SVGCircleElement;
+    const pointData = (circleElement as any).__data__;
+    setPointIdToDelete(pointData.id);
+    setIsContextMenuOpen(true);
+  };
+
+  const deletePoint = () => {
+    SVGFieldService.deletePoint(svgRef, pointIdToDelete);
+    setPoints(prev => {
+      const updatedPoints = { ...prev };
+      delete updatedPoints[pointIdToDelete];
+      return updatedPoints;
+    });
+    SVGFieldService.drawCurve(svgRef, points);
+    setIsContextMenuOpen(false);
+  };
+
+  const closeContextMenu = () => {
+    setPointIdToDelete("");
+    setIsContextMenuOpen(false);
+  };
+
   return (
     <div>
-      <svg className={cl.field} ref={svgRef} onClick={handleClick} />
-      <div className={cl.actions}>
-        <Button clickHandler={changeEditAbility}>
+      {isContextMenuOpen && (
+        <ContextMenu coords={contextMenuCoords} onClose={closeContextMenu}>
+          <Button clickHandler={deletePoint}>delete</Button>
+        </ContextMenu>
+      )}
+      <svg
+        className={styles.field}
+        ref={svgRef}
+        onClick={addPoint}
+        onContextMenu={event => openContextMenu(event)}
+      />
+      <div className={styles.actions}>
+        <Button
+          clickHandler={changeEditAbility}
+          disabled={isContextMenuOpen || !Object.keys(points).length}
+        >
           {isEditable ? "save" : "edit position"}
         </Button>
-        <Button clickHandler={clearField}>clear</Button>
+        <Button
+          className={styles.clearBtn}
+          clickHandler={clearField}
+          disabled={isContextMenuOpen || !Object.keys(points).length}
+        >
+          clear
+        </Button>
       </div>
     </div>
   );
