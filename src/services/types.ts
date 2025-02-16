@@ -28,3 +28,11 @@ export type DeletePoint = (
   svgRef: React.RefObject<SVGSVGElement | null>,
   id: Point["id"]
 ) => void
+
+export type AddPoint = (
+  svgRef: React.RefObject<SVGSVGElement | null>,
+  event: React.MouseEvent<SVGSVGElement>,
+  points: Points
+) => Point | undefined
+
+export type UpdatePointCoords = ({ id, x, y }: Point, points: Points) => Points

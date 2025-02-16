@@ -96,8 +96,6 @@ export default class SVGFieldService {
   static deletePoint: DeletePoint = function (svgRef, id) {
     if (!svgRef.current) return
     const svg = d3.select(svgRef.current)
-    console.log(id)
-
     svg
       .selectAll("circle")
       .filter((d: any) => d.id === id)

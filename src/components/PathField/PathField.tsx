@@ -1,5 +1,6 @@
 import Button from "@/components/Button/Button"
 import { PointsContext } from "@/components/PointsContext"
+import PointsService from "@/services/PointsService"
 import SVGFieldService from "@/services/SVGFieldService"
 import { Coords } from "@/services/types"
 import type { Point } from "@/types/points"
@@ -22,20 +23,21 @@ const PathField = () => {
   }
   const { points, setPoints } = pointsContext?.pointsValue
 
-  const updateCoords = ({ id, x, y }: Point) => {
-    setPoints(prev => {
-      const newId = `${x}-${y}`
-      const pointsArray = Object.entries(prev)
-      const index = pointsArray.findIndex(([key]) => key === id)
-      if (index === -1) {
-        return prev
-      }
-      pointsArray[index] = [
-        newId,
-        { ...pointsArray[index][1], id: newId, x, y },
-      ]
-      return Object.fromEntries(pointsArray)
-    })
+  const updateCoords = (point: Point) => {
+    const updatedPoints = PointsService.updateCoords(point, points)
+    setPoints(updatedPoints)
+  }
+
+  const addPoint = (event: React.MouseEvent<SVGSVGElement>) => {
+    setIsContextMenuOpen(false)
+    const newPoint = PointsService.addPoint(svgRef, event, points)
+    if (!newPoint) {
+      return
+    }
+    setPoints(prev => ({
+      ...prev,
+      [newPoint.id]: { id: newPoint.id, x: newPoint.x, y: newPoint.y },
+    }))
   }
 
   useEffect(() => {
@@ -45,29 +47,7 @@ const PathField = () => {
     if (isEditable) {
       SVGFieldService.dragPoint(svgRef, points, updateCoords)
     }
-    console.log(points)
   }, [points, isEditable])
-
-  const addPoint = (event: React.MouseEvent<SVGSVGElement>) => {
-    const rect = svgRef.current?.getBoundingClientRect()
-    if (!rect || isContextMenuOpen) {
-      setIsContextMenuOpen(false)
-      return
-    }
-
-    const x = event.clientX - rect.left
-    const y = event.clientY - rect.top
-    const pointId = `${x}-${y}`
-
-    if (points[pointId]) {
-      return
-    }
-
-    setPoints(prev => ({
-      ...prev,
-      [pointId]: { id: pointId, x, y },
-    }))
-  }
 
   const changeEditAbility = () => {
     setIsEditable(!isEditable)
