@@ -1,9 +1,9 @@
-import cl from "./Button.module.css";
+import cl from "./Button.module.css"
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
-  clickHandler?: () => void;
-  className?: string;
+  children: React.ReactNode
+  clickHandler?: () => void
+  className?: string
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -19,7 +19,7 @@ const Button: React.FC<ButtonProps> = ({
     >
       {children}
     </button>
-  );
-};
+  )
+}
 
-export default Button;
+export default Button

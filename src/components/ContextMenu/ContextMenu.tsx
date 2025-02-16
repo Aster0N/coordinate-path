@@ -1,13 +1,13 @@
-import X from "@/assets/img/x.svg";
-import { Coords } from "@/services/types";
-import Button from "../Button/Button";
-import styles from "./ContextMenu.module.css";
+import X from "@/assets/img/x.svg"
+import { Coords } from "@/services/types"
+import Button from "../Button/Button"
+import styles from "./ContextMenu.module.css"
 
 type ContextMenuProps = {
-  coords: Coords;
-  children: React.ReactNode;
-  onClose: () => void;
-};
+  coords: Coords
+  children: React.ReactNode
+  onClose: () => void
+}
 
 const ContextMenu: React.FC<ContextMenuProps> = ({
   coords,
@@ -24,7 +24,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
         <img src={X} alt="close" />
       </Button>
     </div>
-  );
-};
+  )
+}
 
-export default ContextMenu;
+export default ContextMenu

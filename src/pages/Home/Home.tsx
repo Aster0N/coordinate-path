@@ -1,4 +1,4 @@
-import PathField from "@/components/PathField/PathField.tsx";
+import PathField from "@/components/PathField/PathField.tsx"
 
 const Home = () => {
   return (
@@ -6,7 +6,7 @@ const Home = () => {
       <h1>Click on the field</h1>
       <PathField />
     </>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

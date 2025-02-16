@@ -1,23 +1,23 @@
-import type { Points } from "@/types/points";
-import { createContext, Dispatch, SetStateAction, useState } from "react";
+import type { Points } from "@/types/points"
+import { createContext, Dispatch, SetStateAction, useState } from "react"
 
 type PointsProviderProps = {
-  children: React.ReactNode;
-};
+  children: React.ReactNode
+}
 
 type PointsContextValues = {
   pointsValue: {
-    points: Points;
-    setPoints: Dispatch<SetStateAction<Points>>;
-  };
-};
+    points: Points
+    setPoints: Dispatch<SetStateAction<Points>>
+  }
+}
 
-const PointsContext = createContext<PointsContextValues | null>(null);
+const PointsContext = createContext<PointsContextValues | null>(null)
 
 const PointsContextProvider: React.FC<PointsProviderProps> = ({ children }) => {
-  const [points, setPoints] = useState<Points>({});
+  const [points, setPoints] = useState<Points>({})
 
-  const pointsValue = { points, setPoints };
+  const pointsValue = { points, setPoints }
 
   return (
     <PointsContext.Provider
@@ -27,7 +27,7 @@ const PointsContextProvider: React.FC<PointsProviderProps> = ({ children }) => {
     >
       {children}
     </PointsContext.Provider>
-  );
-};
+  )
+}
 
-export { PointsContext, PointsContextProvider };
+export { PointsContext, PointsContextProvider }

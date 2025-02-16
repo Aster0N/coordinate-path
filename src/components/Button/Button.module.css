@@ -8,7 +8,6 @@
   transition: all 0.3s ease-out;
   outline: none;
   background-color: #242424;
-  cursor: pointer;
 }
 
 .button:hover {
