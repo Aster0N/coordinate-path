@@ -29,7 +29,10 @@ const PathField = () => {
   }
 
   const addPoint = (event: React.MouseEvent<SVGSVGElement>) => {
-    setIsContextMenuOpen(false)
+    if (isContextMenuOpen) {
+      setIsContextMenuOpen(false)
+      return
+    }
     const newPoint = PointsService.addPoint(svgRef, event, points)
     if (!newPoint) {
       return
