@@ -26,7 +26,7 @@ export type DragPoint = (
 
 export type DeletePoint = (
   svgRef: React.RefObject<SVGSVGElement | null>,
-  id: Point["id"]
+  pointId: Point["id"]
 ) => void
 
 export type AddPoint = (
@@ -35,4 +35,16 @@ export type AddPoint = (
   points: Points
 ) => Point | undefined
 
+export type PaintPoint = (
+  svgRef: React.RefObject<SVGSVGElement | null>,
+  color: string,
+  pointId: Point["id"]
+) => void
+
 export type UpdatePointCoords = ({ id, x, y }: Point, points: Points) => Points
+
+export type UpdatePointColor = (
+  id: string,
+  color: string,
+  points: Points
+) => Points

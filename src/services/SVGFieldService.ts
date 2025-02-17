@@ -4,6 +4,7 @@ import type {
   DragPoint,
   DrawCurve,
   DrawPoint,
+  PaintPoint,
 } from "@/services/types"
 import type { Point } from "@/types/points"
 import * as d3 from "d3"
@@ -22,7 +23,7 @@ export default class SVGFieldService {
       .attr("cx", d => d.x)
       .attr("cy", d => d.y)
       .attr("r", 20)
-      .attr("fill", "white")
+      .attr("fill", d => d.hex)
       .attr("cursor", isEditable ? "pointer" : "default")
   }
 
@@ -93,12 +94,21 @@ export default class SVGFieldService {
     svg.selectAll("*").remove()
   }
 
-  static deletePoint: DeletePoint = function (svgRef, id) {
+  static deletePoint: DeletePoint = function (svgRef, pointId) {
     if (!svgRef.current) return
     const svg = d3.select(svgRef.current)
     svg
       .selectAll("circle")
-      .filter((d: any) => d.id === id)
+      .filter((d: any) => d.id === pointId)
       .remove()
+  }
+
+  static paintPoint: PaintPoint = function (svgRef, color, pointId) {
+    if (!svgRef.current) return
+
+    d3.select(svgRef.current)
+      .selectAll("circle")
+      .filter((d: any) => d.id === pointId)
+      .attr("fill", color)
   }
 }

@@ -1,27 +1,33 @@
 import Button from "@/components/Button/Button"
 import { PointsContext } from "@/components/PointsContext"
+import { pointConsts } from "@/consts/consts"
 import PointsService from "@/services/PointsService"
 import SVGFieldService from "@/services/SVGFieldService"
-import { Coords } from "@/services/types"
 import type { Point } from "@/types/points"
 import { useContext, useEffect, useRef, useState } from "react"
+import ColorDropdown from "../ColorDropdown/ColorDropDown"
 import ContextMenu from "../ContextMenu/ContextMenu"
 import styles from "./PathField.module.css"
+
+const initialPointInfo: Point = {
+  id: "",
+  x: 0,
+  y: 0,
+  hex: pointConsts.defaultColor,
+}
 
 const PathField = () => {
   const svgRef = useRef<SVGSVGElement | null>(null)
   const [isContextMenuOpen, setIsContextMenuOpen] = useState<boolean>(false)
-  const [contextMenuCoords, setContextMenuCoords] = useState<Coords>({
-    x: 0,
-    y: 0,
-  })
-  const [pointIdToDelete, setPointIdToDelete] = useState<Point["id"]>("")
+  const [contextMenuPointInfo, setContextMenuPointInfo] =
+    useState<Point>(initialPointInfo)
   const [isEditable, setIsEditable] = useState<Boolean>(false)
   const pointsContext = useContext(PointsContext)
   if (!pointsContext) {
     throw new Error("PointsContext must be used within a PointsContextProvider")
   }
   const { points, setPoints } = pointsContext?.pointsValue
+  const svgControlsDisabled = isContextMenuOpen || !Object.keys(points).length
 
   const updateCoords = (point: Point) => {
     const updatedPoints = PointsService.updateCoords(point, points)
@@ -39,7 +45,12 @@ const PathField = () => {
     }
     setPoints(prev => ({
       ...prev,
-      [newPoint.id]: { id: newPoint.id, x: newPoint.x, y: newPoint.y },
+      [newPoint.id]: {
+        id: newPoint.id,
+        x: newPoint.x,
+        y: newPoint.y,
+        hex: newPoint.hex,
+      },
     }))
   }
 
@@ -67,23 +78,25 @@ const PathField = () => {
       setIsContextMenuOpen(false)
       return
     }
-    setIsEditable(false)
     event.preventDefault()
-    setContextMenuCoords({
-      x: event.clientX,
-      y: event.clientY,
-    })
+    setIsEditable(false)
     const circleElement = event.target as SVGCircleElement
     const pointData = (circleElement as any).__data__
-    setPointIdToDelete(pointData.id)
+    setContextMenuPointInfo({
+      id: pointData.id,
+      x: event.clientX,
+      y: event.clientY,
+      hex: pointData.hex,
+    })
+    // ! executes faster than setContextMenuPointInfo
     setIsContextMenuOpen(true)
   }
 
   const deletePoint = () => {
-    SVGFieldService.deletePoint(svgRef, pointIdToDelete)
+    SVGFieldService.deletePoint(svgRef, contextMenuPointInfo.id)
     setPoints(prev => {
       const updatedPoints = { ...prev }
-      delete updatedPoints[pointIdToDelete]
+      delete updatedPoints[contextMenuPointInfo.id]
       return updatedPoints
     })
     SVGFieldService.drawCurve(svgRef, points)
@@ -91,15 +104,33 @@ const PathField = () => {
   }
 
   const closeContextMenu = () => {
-    setPointIdToDelete("")
+    setContextMenuPointInfo(initialPointInfo)
     setIsContextMenuOpen(false)
+  }
+
+  const handleSelectColorChange = (color: string) => {
+    SVGFieldService.paintPoint(svgRef, color, contextMenuPointInfo.id)
+    const updatedPoints = PointsService.updatePointColor(
+      contextMenuPointInfo.id,
+      color,
+      points
+    )
+    setPoints(updatedPoints)
   }
 
   return (
     <div>
       {isContextMenuOpen && (
-        <ContextMenu coords={contextMenuCoords} onClose={closeContextMenu}>
+        <ContextMenu
+          coords={{ x: contextMenuPointInfo.x, y: contextMenuPointInfo.y }}
+          onClose={closeContextMenu}
+        >
           <Button clickHandler={deletePoint}>delete</Button>
+          <ColorDropdown
+            selected={contextMenuPointInfo?.hex}
+            options={pointConsts.selectColorOptions}
+            onChange={handleSelectColorChange}
+          ></ColorDropdown>
         </ContextMenu>
       )}
       <svg
@@ -109,16 +140,13 @@ const PathField = () => {
         onContextMenu={event => openContextMenu(event)}
       />
       <div className={styles.actions}>
-        <Button
-          clickHandler={changeEditAbility}
-          disabled={isContextMenuOpen || !Object.keys(points).length}
-        >
+        <Button clickHandler={changeEditAbility} disabled={svgControlsDisabled}>
           {isEditable ? "save" : "edit position"}
         </Button>
         <Button
           className={styles.clearBtn}
           clickHandler={clearField}
-          disabled={isContextMenuOpen || !Object.keys(points).length}
+          disabled={svgControlsDisabled}
         >
           clear
         </Button>
