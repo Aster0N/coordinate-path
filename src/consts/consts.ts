@@ -26,4 +26,6 @@ export const pointConsts = {
       colorHEX: "#B400FF",
     },
   ],
+  firstPointStroke: "#4490dd",
+  lastPointStrike: "#079a7d",
 }

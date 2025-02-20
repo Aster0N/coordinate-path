@@ -1,3 +1,4 @@
+import { pointConsts } from "@/consts/consts"
 import type {
   ClearField,
   DeletePoint,
@@ -13,11 +14,12 @@ export default class SVGFieldService {
   static drawPoint: DrawPoint = function (svgRef, points, isEditable) {
     if (!svgRef.current) return
     const svg = d3.select(svgRef.current)
+    const pointsArray = Object.values(points)
     svg.selectAll("*").remove()
 
     svg
       .selectAll("circle")
-      .data(Object.values(points), (d: any) => d.id)
+      .data(pointsArray, (d: any) => d.id)
       .enter()
       .append("circle")
       .attr("cx", d => d.x)
@@ -25,6 +27,12 @@ export default class SVGFieldService {
       .attr("r", 20)
       .attr("fill", d => d.hex)
       .attr("cursor", isEditable ? "pointer" : "default")
+      .attr("stroke", (_, i) => {
+        if (i === 0) return pointConsts.firstPointStroke
+        if (i === pointsArray.length - 1) return pointConsts.lastPointStrike
+        return "none"
+      })
+      .attr("stroke-width", 4)
   }
 
   static dragPoint: DragPoint = function (svgRef, points, updateCoords) {
