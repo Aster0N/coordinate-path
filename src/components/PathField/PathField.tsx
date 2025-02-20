@@ -11,7 +11,7 @@ import ContextMenu from "../ContextMenu/ContextMenu"
 import styles from "./PathField.module.css"
 
 const initialPointInfo: Point = {
-  id: "",
+  uid: "",
   x: 0,
   y: 0,
   hex: pointConsts.defaultColor,
@@ -57,8 +57,8 @@ const PathField = () => {
     }
     setPoints(prev => ({
       ...prev,
-      [newPoint.id]: {
-        id: newPoint.id,
+      [newPoint.uid]: {
+        uid: newPoint.uid,
         x: newPoint.x,
         y: newPoint.y,
         hex: newPoint.hex,
@@ -82,7 +82,7 @@ const PathField = () => {
     const circleElement = event.target as SVGCircleElement
     const pointData = (circleElement as any).__data__
     setContextMenuPointInfo({
-      id: pointData.id,
+      uid: pointData.uid,
       x: event.clientX,
       y: event.clientY,
       hex: pointData.hex,
@@ -92,10 +92,10 @@ const PathField = () => {
   }
 
   const deletePoint = () => {
-    SVGFieldService.deletePoint(svgRef, contextMenuPointInfo.id)
+    SVGFieldService.deletePoint(svgRef, contextMenuPointInfo.uid)
     setPoints(prev => {
       const updatedPoints = { ...prev }
-      delete updatedPoints[contextMenuPointInfo.id]
+      delete updatedPoints[contextMenuPointInfo.uid]
       return updatedPoints
     })
     SVGFieldService.drawCurve(svgRef, points)
@@ -108,9 +108,9 @@ const PathField = () => {
   }
 
   const handleSelectColorChange = (color: string) => {
-    SVGFieldService.paintPoint(svgRef, color, contextMenuPointInfo.id)
+    SVGFieldService.paintPoint(svgRef, color, contextMenuPointInfo.uid)
     const updatedPoints = PointsService.updatePointColor(
-      contextMenuPointInfo.id,
+      contextMenuPointInfo.uid,
       color,
       points
     )

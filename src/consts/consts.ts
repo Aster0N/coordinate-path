@@ -28,4 +28,5 @@ export const pointConsts = {
   ],
   firstPointStroke: "#4490dd",
   lastPointStrike: "#079a7d",
+	pointOnDragStroke: "#747bff"
 }

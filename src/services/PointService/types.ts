@@ -1,4 +1,6 @@
-import type { Point, Points } from "@/types/points"
+import type { Coords, Point, Points } from "@/types/points"
+
+export type GenerateUId = (coords: Coords) => string
 
 export type AddPoint = (
   svgRef: React.RefObject<SVGSVGElement | null>,
@@ -6,7 +8,7 @@ export type AddPoint = (
   points: Points
 ) => Point | undefined
 
-export type UpdatePointCoords = ({ id, x, y }: Point, points: Points) => Points
+export type UpdatePointCoords = ({ uid, x, y }: Point, points: Points) => Points
 
 export type UpdatePointColor = (
   id: string,

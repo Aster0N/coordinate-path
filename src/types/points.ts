@@ -4,10 +4,10 @@ export type Coords = {
 }
 
 export type Point = {
-  id: string
+  uid: string
   x: number
   y: number
   hex: string
 }
 
-export type Points = Record<Point["id"], Point>
+export type Points = Record<Point["uid"], Point>
