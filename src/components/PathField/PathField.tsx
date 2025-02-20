@@ -4,6 +4,7 @@ import { pointConsts } from "@/consts/consts"
 import PointsService from "@/services/PointService/PointsService"
 import SVGFieldService from "@/services/SVGFieldService/SVGFieldService"
 import type { Point } from "@/types/points"
+import { LockKeyhole, LockKeyholeOpen } from "lucide-react"
 import { useContext, useEffect, useRef, useState } from "react"
 import ColorDropdown from "../ColorDropdown/ColorDropDown"
 import ContextMenu from "../ContextMenu/ContextMenu"
@@ -21,13 +22,15 @@ const PathField = () => {
   const [isContextMenuOpen, setIsContextMenuOpen] = useState<boolean>(false)
   const [contextMenuPointInfo, setContextMenuPointInfo] =
     useState<Point>(initialPointInfo)
-  const [isEditable, setIsEditable] = useState<Boolean>(false)
+  const [isEditable, setIsEditable] = useState<boolean>(false)
+  const [lockSVGField, setLockSVGField] = useState<boolean>(false)
   const pointsContext = useContext(PointsContext)
   if (!pointsContext) {
     throw new Error("PointsContext must be used within a PointsContextProvider")
   }
   const { points, setPoints } = pointsContext?.pointsValue
-  const svgControlsDisabled = isContextMenuOpen || !Object.keys(points).length
+  const svgControlsDisabled =
+    isContextMenuOpen || !Object.keys(points).length || lockSVGField
 
   useEffect(() => {
     SVGFieldService.drawPoint(svgRef, points, isEditable)
@@ -134,6 +137,7 @@ const PathField = () => {
         ref={svgRef}
         onClick={addPoint}
         onContextMenu={event => openContextMenu(event)}
+        style={{ pointerEvents: lockSVGField ? "none" : "all" }}
       />
       <div className={styles.actions}>
         <Button
@@ -141,6 +145,17 @@ const PathField = () => {
           disabled={svgControlsDisabled}
         >
           {isEditable ? "save" : "edit position"}
+        </Button>
+        <Button
+          className={lockSVGField ? styles.lockedFieldBtn : ""}
+          clickHandler={() => setLockSVGField(!lockSVGField)}
+        >
+          <span>lock field</span>
+          {lockSVGField ? (
+            <LockKeyhole size={20} />
+          ) : (
+            <LockKeyholeOpen size={20} />
+          )}
         </Button>
         <Button
           className={styles.clearBtn}

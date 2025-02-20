@@ -1,8 +1,8 @@
-import X from "@/assets/img/x.svg"
-import { Coords } from "@/types/points"
-import { useEffect, useRef, useState } from "react"
-import Button from "../Button/Button"
-import styles from "./ContextMenu.module.css"
+import { Coords } from "@/types/points";
+import { X } from 'lucide-react';
+import { useEffect, useRef, useState } from "react";
+import Button from "../Button/Button";
+import styles from "./ContextMenu.module.css";
 
 type ContextMenuProps = {
   coords: Coords
@@ -39,7 +39,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
     >
       <div className={styles.contextMenuContent}>{children}</div>
       <Button className={styles.closeMenuBtn} clickHandler={onClose}>
-        <img src={X} alt="close" />
+				<X />
       </Button>
     </div>
   )
