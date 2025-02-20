@@ -1,5 +1,9 @@
 import { pointConsts } from "@/consts/consts"
-import type { AddPoint, UpdatePointColor, UpdatePointCoords } from "./types"
+import type {
+  AddPoint,
+  UpdatePointColor,
+  UpdatePointCoords,
+} from "@/services/PointService/types"
 
 export default class PointsService {
   static addPoint: AddPoint = function (svgRef, event, points) {

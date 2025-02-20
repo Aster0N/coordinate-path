@@ -1,5 +1,5 @@
 import X from "@/assets/img/x.svg"
-import { Coords } from "@/services/types"
+import { Coords } from "@/types/points"
 import { useEffect, useRef, useState } from "react"
 import Button from "../Button/Button"
 import styles from "./ContextMenu.module.css"

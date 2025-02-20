@@ -5,7 +5,7 @@ import type {
   DrawCurve,
   DrawPoint,
   PaintPoint,
-} from "@/services/types"
+} from "@/services/SVGFieldService/types"
 import type { Point } from "@/types/points"
 import * as d3 from "d3"
 

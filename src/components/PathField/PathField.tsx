@@ -1,8 +1,8 @@
 import Button from "@/components/Button/Button"
 import { PointsContext } from "@/components/PointsContext"
 import { pointConsts } from "@/consts/consts"
-import PointsService from "@/services/PointsService"
-import SVGFieldService from "@/services/SVGFieldService"
+import PointsService from "@/services/PointService/PointsService"
+import SVGFieldService from "@/services/SVGFieldService/SVGFieldService"
 import type { Point } from "@/types/points"
 import { useContext, useEffect, useRef, useState } from "react"
 import ColorDropdown from "../ColorDropdown/ColorDropDown"
@@ -29,6 +29,15 @@ const PathField = () => {
   const { points, setPoints } = pointsContext?.pointsValue
   const svgControlsDisabled = isContextMenuOpen || !Object.keys(points).length
 
+  useEffect(() => {
+    SVGFieldService.drawPoint(svgRef, points, isEditable)
+    SVGFieldService.drawCurve(svgRef, points)
+
+    if (isEditable) {
+      SVGFieldService.dragPoint(svgRef, points, updateCoords)
+    }
+  }, [points, isEditable])
+
   const updateCoords = (point: Point) => {
     const updatedPoints = PointsService.updateCoords(point, points)
     setPoints(updatedPoints)
@@ -52,19 +61,6 @@ const PathField = () => {
         hex: newPoint.hex,
       },
     }))
-  }
-
-  useEffect(() => {
-    SVGFieldService.drawPoint(svgRef, points, isEditable)
-    SVGFieldService.drawCurve(svgRef, points)
-
-    if (isEditable) {
-      SVGFieldService.dragPoint(svgRef, points, updateCoords)
-    }
-  }, [points, isEditable])
-
-  const changeEditAbility = () => {
-    setIsEditable(!isEditable)
   }
 
   const clearField = () => {
@@ -140,7 +136,10 @@ const PathField = () => {
         onContextMenu={event => openContextMenu(event)}
       />
       <div className={styles.actions}>
-        <Button clickHandler={changeEditAbility} disabled={svgControlsDisabled}>
+        <Button
+          clickHandler={() => setIsEditable(!isEditable)}
+          disabled={svgControlsDisabled}
+        >
           {isEditable ? "save" : "edit position"}
         </Button>
         <Button
