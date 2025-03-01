@@ -1,3 +1,4 @@
+import { pointConsts } from "@/consts/consts"
 import { useRef, useState } from "react"
 import styles from "./ColorDropdown.module.css"
 
@@ -5,13 +6,13 @@ type Option = { uniqueName: string; colorHEX: string }
 
 type DropDownProps = {
   selected: Option["colorHEX"]
-  options: Option[]
+  options?: Option[]
   onChange: (value: string) => void
 }
 
 const ColorDropdown: React.FC<DropDownProps> = ({
   selected,
-  options,
+  options = pointConsts.selectColorOptions,
   onChange,
 }) => {
   const [selectedColor, setSelectedColor] = useState(selected)

@@ -1,6 +1,6 @@
 import Button from "@/components/Button/Button"
 import { PointsContext } from "@/components/PointsContext"
-import { initialPointInfo, pointConsts } from "@/consts/consts"
+import { initialPointInfo } from "@/consts/consts"
 import PointsService from "@/services/PointService/PointsService"
 import SVGFieldService from "@/services/SVGFieldService/SVGFieldService"
 import type { Point } from "@/types/points"
@@ -80,7 +80,10 @@ const PathField = () => {
       y: event.clientY,
       hex: pointData.hex,
     })
-    // ! executes faster than setContextMenuPointInfo
+    /*
+		 ! executes faster than setContextMenuPointInfo
+		 ? solved by adding key to ColorDropdown for force rerender
+		*/
     setIsContextMenuOpen(true)
   }
 
@@ -119,8 +122,8 @@ const PathField = () => {
         >
           <Button clickHandler={deletePoint}>delete</Button>
           <ColorDropdown
+            key={contextMenuPointInfo?.uid}
             selected={contextMenuPointInfo?.hex}
-            options={pointConsts.selectColorOptions}
             onChange={handleSelectColorChange}
           ></ColorDropdown>
         </ContextMenu>
