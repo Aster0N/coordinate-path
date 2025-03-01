@@ -1,9 +1,12 @@
+import type { Point } from "@/types/points"
+
+export const defaultColor = "#FFFFFF"
+
 export const pointConsts = {
-  defaultColor: "#FFFFFF",
   selectColorOptions: [
     {
       uniqueName: "White",
-      colorHEX: "#FFFFFF",
+      colorHEX: defaultColor,
     },
     {
       uniqueName: "Vivid Blue",
@@ -28,5 +31,12 @@ export const pointConsts = {
   ],
   firstPointStroke: "#4490dd",
   lastPointStrike: "#079a7d",
-	pointOnDragStroke: "#747bff"
+  pointOnDragStroke: "#747bff",
+}
+
+export const initialPointInfo: Point = {
+  uid: "",
+  x: 0,
+  y: 0,
+  hex: defaultColor,
 }

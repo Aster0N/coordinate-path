@@ -40,7 +40,7 @@ export default class SVGFieldService {
       })
       .attr("stroke-width", 4)
   }
-  // ! can connect last with first, but can't connect first with last
+
   static dragPoint: DragPoint = function (svgRef, points, updateCoords) {
     if (!svgRef.current) return
     const svg = d3.select(svgRef.current)
@@ -51,7 +51,13 @@ export default class SVGFieldService {
       x: pointsArray[0].x,
       y: pointsArray[0].y,
     }
+    const lastPoint = {
+      uid: pointsArray[pointsArray.length - 1].uid,
+      x: pointsArray[pointsArray.length - 1].x,
+      y: pointsArray[pointsArray.length - 1].y,
+    }
     let doConnect = false
+    let connectStartToEnd = true
 
     circles.call(
       d3
@@ -81,19 +87,28 @@ export default class SVGFieldService {
           d.x = Math.max(minX, Math.min(event.x, maxX))
           d.y = Math.max(minY, Math.min(event.y, maxY))
 
-          const lastPoint = pointsArray[pointsArray.length - 1]
+          connectStartToEnd = d.uid === firstPoint.uid
+
           const ifMakingACircle =
-            d.uid === lastPoint.uid &&
-            d.x >= firstPoint.x - POINT_RADIUS &&
-            d.x <= firstPoint.x + POINT_RADIUS &&
-            d.y >= firstPoint.y - POINT_RADIUS &&
-            d.y <= firstPoint.y + POINT_RADIUS
+            (d.uid === lastPoint.uid &&
+              d.x >= firstPoint.x - POINT_RADIUS &&
+              d.x <= firstPoint.x + POINT_RADIUS &&
+              d.y >= firstPoint.y - POINT_RADIUS &&
+              d.y <= firstPoint.y + POINT_RADIUS) ||
+            (d.uid === firstPoint.uid &&
+              d.x >= lastPoint.x - POINT_RADIUS &&
+              d.x <= lastPoint.x + POINT_RADIUS &&
+              d.y >= lastPoint.y - POINT_RADIUS &&
+              d.y <= lastPoint.y + POINT_RADIUS)
 
           if (ifMakingACircle) {
             d3.select(this).attr("stroke", "orange")
             d3.select(svgRef.current)
               .selectAll("circle")
-              .filter((d: any) => d.uid === pointsArray[0].uid)
+              .filter(
+                (d: any) =>
+                  d.uid === (connectStartToEnd ? lastPoint.uid : firstPoint.uid)
+              )
               .attr("stroke", "orange")
             doConnect = true
           }
@@ -104,8 +119,8 @@ export default class SVGFieldService {
         })
         .on("end", function (_, d) {
           if (doConnect) {
-            d.x = firstPoint.x
-            d.y = firstPoint.y
+            d.x = connectStartToEnd ? lastPoint.x : firstPoint.x
+            d.y = connectStartToEnd ? lastPoint.y : firstPoint.y
           }
           if (updateCoords) {
             updateCoords(d)

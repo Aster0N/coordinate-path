@@ -1,6 +1,6 @@
 import Button from "@/components/Button/Button"
 import { PointsContext } from "@/components/PointsContext"
-import { pointConsts } from "@/consts/consts"
+import { initialPointInfo, pointConsts } from "@/consts/consts"
 import PointsService from "@/services/PointService/PointsService"
 import SVGFieldService from "@/services/SVGFieldService/SVGFieldService"
 import type { Point } from "@/types/points"
@@ -9,13 +9,6 @@ import { useContext, useEffect, useRef, useState } from "react"
 import ColorDropdown from "../ColorDropdown/ColorDropDown"
 import ContextMenu from "../ContextMenu/ContextMenu"
 import styles from "./PathField.module.css"
-
-const initialPointInfo: Point = {
-  uid: "",
-  x: 0,
-  y: 0,
-  hex: pointConsts.defaultColor,
-}
 
 const PathField = () => {
   const svgRef = useRef<SVGSVGElement | null>(null)

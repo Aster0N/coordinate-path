@@ -1,4 +1,4 @@
-import { pointConsts } from "@/consts/consts"
+import { defaultColor } from "@/consts/consts"
 import type {
   AddPoint,
   GenerateUId,
@@ -21,7 +21,7 @@ export default class PointsService {
     const x = event.clientX - rect.left
     const y = event.clientY - rect.top
     const pointId = PointsService.generateUId({ x, y })
-    const newPoint = { uid: pointId, x, y, hex: pointConsts.defaultColor }
+    const newPoint = { uid: pointId, x, y, hex: defaultColor }
 
     if (points[pointId]) {
       return
